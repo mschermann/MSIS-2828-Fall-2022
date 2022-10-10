@@ -1,7 +1,11 @@
 # MSIS 2628 in Fall 2022
 
 * This is the class repository. 
-* Check back frequently for updates
+
+# Code Lab 2
+* 'docker build -t my_jupyter .'
+* 'docker run -d -p8888:8888 my_jupyter'
+* Open link from Docker Dashboard inspection
 
 # Sources
 
