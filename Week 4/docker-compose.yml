@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  # consumer
+  consumer: 
+    build: ./consumer/
+    hostname: consumer
+    environment:
+      - API_HOST=${API_HOST}
+      - API_PORT=${API_PORT}
+      - CONSUMER_PORT=${CONSUMER_PORT}
+    command: python consumer.py 
+    volumes:
+      - ./consumer/code:/app
+    ports:
+      - "${CONSUMER_PORT}:${CONSUMER_PORT}"
+  api:
+    build: ./api/
+    hostname: ${API_HOST}
+    environment:
+      - API_PORT=${API_PORT}
+    command: python api.py
+    volumes:
+      - ./api/code:/app
+    ports:
+      - "${API_PORT}:${API_PORT}"
