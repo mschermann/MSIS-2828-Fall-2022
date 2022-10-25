@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  # consumer
+  consumer: 
+    build: ./consumer/
+    hostname: consumer
+    environment:
+      - API_HOST=${API_HOST}
+      - API_PORT=${API_PORT}
+      - CONSUMER_PORT=${CONSUMER_PORT}
+    command: python consumer.py 
+    volumes:
+      - ./consumer/code:/app
+    ports:
+      - "${CONSUMER_PORT}:${CONSUMER_PORT}"
+  api:
+    build: ./api/
+    hostname: ${API_HOST}
+    environment:
+      - API_PORT=${API_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DB=${DB_DB}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      
+    command: python api.py
+    volumes:
+      - ./api/code:/app
+    ports:
+      - "${API_PORT}:${API_PORT}"
+  db:
+    image: postgres:12.12
+    hostname: ${DB_HOST}
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+  dba:
+    image: dpage/pgadmin4
+    hostname: ${DBA_HOST}
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${DBA_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${DBA_PASS}
+      - PGADMIN_LISTEN_PORT=${DBA_PORT}
+    volumes:
+      -   pgadmindata:/var/lib/pgadmin
+   
+    ports:
+      - "${DBA_PORT}:${DBA_PORT}"
+volumes:
+  pgdata:
+  pgadmindata:
